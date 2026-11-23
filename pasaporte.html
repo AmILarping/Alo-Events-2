@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ALÓ Events – Latin Partys &amp; Events in ganz Deutschland</title>
+<meta name="description" content="Latin, Afro &amp; House mit DJs und Live-Acts: ALÓ Events macht Latin Partys und Events in ganz Deutschland.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23E0FF22'/%3E%3C/svg%3E">
+
+<!-- Display-Font fürs Laufband und das Hintergrundbild (LCP) so früh wie möglich laden -->
+<link rel="preload" href="fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" type="image/avif" fetchpriority="high"
+      imagesrcset="img/hero-dj-bg-1200.avif 1200w, img/hero-dj-bg-1800.avif 1800w, img/hero-dj-bg-2400.avif 2400w"
+      imagesizes="(max-aspect-ratio: 3/2) 150vh, 100vw">
+
+<style>
+/* ---------- Schriften (selbst gehostet, gleiche Schnitte wie Website v5) ---------- */
+@font-face{font-family:"Anton";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/anton-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"Sora";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/sora-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"Sora";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/sora-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"Sora";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/sora-latin-700-normal.woff2") format("woff2")}
+
+/* ---------- Designsystem Neon-Variante A (aus Website v5 übernommen) ---------- */
+:root{--lime:#E0FF22;--red:#FF2E4D;--pink:#ED1566;--cyan:#1EF2FF;--phone:#E3261B;
+  --display:"Anton",Impact,sans-serif;--text:"Sora",system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html{overflow-x:clip;-webkit-text-size-adjust:100%}
+body{margin:0;overflow-x:clip;background:#000;color:#fff;font-family:var(--text);font-size:1rem;line-height:1.6}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus,#E0FF22);outline-offset:3px}
+
+.alo-dot{display:inline-grid;place-items:center;aspect-ratio:1/1;border-radius:50%;background:#E0FF22;color:#000;
+  font-family:"Anton",Impact,sans-serif;font-weight:400;line-height:1;text-decoration:none}
+.top{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;padding:14px clamp(16px,4vw,56px)}
+.top .alo-dot{width:54px;font-size:20px}
+
+.ctas{display:flex;flex-wrap:wrap;gap:12px 14px;margin-top:clamp(18px,3vh,30px)}
+.btn{display:inline-flex;align-items:center;min-height:52px;padding:0 24px;border-radius:6px;font-weight:700;text-decoration:none;font-size:1rem}
+.btn-main{background:var(--lime);color:#000}
+.btn-main:hover{background:#efff7a}
+.btn-alt{box-shadow:inset 0 0 0 2px #fff;color:#fff;background:rgba(0,0,0,.45)}
+.btn-alt:hover{box-shadow:inset 0 0 0 2px var(--lime);color:var(--lime)}
+
+/* ======================================================================
+   Layered Hero
+   Ebenen: 1 Hintergrundfoto · 2 Laufband · 3 freigestellter DJ · 4 Abdunklung · 5 Inhalt
+   ====================================================================== */
+.hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:#05061a;isolation:isolate;
+  container-type:size;
+  /* Bildausschnitt: gilt identisch für Hintergrund und Vordergrund */
+  --pos-x:50%;
+  --pos-y:.5}
+
+.hero__bg,.hero__fg{position:absolute;inset:0;margin:0}
+.hero__bg{z-index:1}
+.hero__fg{z-index:3;pointer-events:none;opacity:0;transition:opacity .25s ease-out}
+/* Vordergrund erst zeigen, wenn das Hintergrundfoto da ist – sonst schwebt der DJ kurz auf Schwarz */
+.hero.is-ready .hero__fg{opacity:1}
+.hero__bg img,.hero__fg img{width:100%;height:100%;object-fit:cover;object-position:var(--pos-x) calc(var(--pos-y) * 100%)}
+
+/* --- Laufband ---
+   Die Höhe folgt dem Foto: Das Bild (3:2) wird per cover skaliert, also ist seine dargestellte Höhe
+   max(Hero-Höhe, Hero-Breite × 2/3). --anchor ist die Stelle im Foto (0 = oben, 1 = unten), auf der die
+   Mitte der Versalien liegt. 0.444 = Abstand Zeilenoberkante → Versalmitte bei Anton und line-height .9.
+   Dadurch sitzt der Text auf jeder Bildschirmgröße an derselben Stelle am Körper des DJs. */
+.hero__marquee{position:absolute;left:0;right:0;z-index:2;pointer-events:none;user-select:none;
+  --fs:clamp(3rem,7.5cqw,8.5rem);
+  --img-h:max(100cqh, 100cqw * 2 / 3);
+  --anchor:.45;
+  --marquee-top:calc(var(--anchor) * var(--img-h) - (var(--img-h) - 100cqh) * var(--pos-y) - .444 * var(--fs));
+  top:var(--marquee-top);
+  font:400 var(--fs)/.9 var(--display);letter-spacing:-.005em;text-transform:uppercase;white-space:nowrap;
+  overflow-x:clip;overflow-y:visible}
+.hero__track{display:flex;width:max-content;animation:hero-marquee 30s linear infinite;will-change:transform}
+.hero__track>span{display:flex;align-items:center;flex:none}
+/* ALÓ-Logo: Lime-Kreis wie oben links (Logo von alo-events.com), mit Neon-Glow */
+.hero__alo{flex:none;display:grid;place-items:center;width:.96em;height:.96em;border-radius:50%;background:var(--lime);color:#000;
+  box-shadow:0 0 .04em var(--lime),0 0 .2em rgba(224,255,34,.75),0 0 .5em rgba(224,255,34,.35)}
+.hero__alo i{font-style:normal;font-size:.37em;line-height:1;letter-spacing:.005em}
+/* PASAPORTE-Logo (aus Website v5): kein Neon, nur ein dunkler Schatten zur Trennung vom Foto */
+.hero__logo{flex:none;display:block;height:.96em;width:auto;max-width:none;filter:drop-shadow(0 .03em .1em rgba(0,0,0,.7))}
+/* Trenner: Hörer aus dem Telefon-Button von v5 */
+.hero__sep{flex:none;width:.62em;height:auto;margin:0 .26em;color:var(--red);
+  filter:drop-shadow(0 0 .04em var(--red)) drop-shadow(0 0 .16em rgba(255,46,77,.75))}
+@keyframes hero-marquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.hero.is-paused .hero__track{animation-play-state:paused}
+
+/* --- Abdunklung für den Inhalt: liegt über BG und FG gleichermaßen, verändert die Ebenen also nicht gegeneinander --- */
+.hero__shade{position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:
+    linear-gradient(0deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.62) 18%,rgba(0,0,0,.18) 32%,rgba(0,0,0,0) 40%),
+    radial-gradient(62% 52% at 0% 100%,rgba(0,0,0,.72) 0%,rgba(0,0,0,.5) 55%,rgba(0,0,0,0) 100%)}
+
+/* --- Inhalt --- */
+.hero__content{position:absolute;z-index:5;left:clamp(16px,4vw,56px);right:clamp(16px,4vw,56px);bottom:clamp(28px,6vh,60px);max-width:44rem}
+.hero__content h1{margin:0;font:400 clamp(2.3rem,4vw,4rem)/.94 var(--display);text-transform:uppercase;letter-spacing:.004em;
+  text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.hero__content h1 span{display:block;color:var(--lime)}
+.hero__content p{margin:clamp(10px,1.6vh,16px) 0 0;max-width:34rem;font:600 clamp(1.02rem,1.3vw,1.25rem)/1.35 var(--text);
+  text-shadow:0 1px 14px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}
+
+/* --- Pause-Button (WCAG 2.2.2) --- */
+.hero__pause{position:absolute;z-index:6;right:clamp(16px,4vw,56px);bottom:clamp(28px,6vh,60px);display:grid;place-items:center;
+  width:48px;height:48px;padding:0;border:0;border-radius:50%;cursor:pointer;color:#fff;background:rgba(0,0,0,.5);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.85);transition:color .15s,box-shadow .15s}
+.hero__pause:hover{color:var(--lime);box-shadow:inset 0 0 0 2px var(--lime)}
+.hero__pause svg{width:18px;height:18px}
+.hero__pause .i-play{display:none}
+.hero__pause[aria-pressed="true"] .i-play{display:block}
+.hero__pause[aria-pressed="true"] .i-pause{display:none}
+
+@media (max-width:767px){
+  .hero__shade{background:
+    linear-gradient(0deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.84) 30%,rgba(0,0,0,.66) 40%,rgba(0,0,0,0) 50%)}
+  .hero__content{right:calc(clamp(16px,4vw,56px) + 60px)}
+}
+@media (max-width:420px){
+  .hero__content{right:clamp(16px,4vw,56px);bottom:calc(clamp(28px,6vh,60px) + 64px)}
+  .hero__pause{bottom:clamp(28px,6vh,60px)}
+}
+
+/* Reduzierte Bewegung: Laufband steht, Text statisch sichtbar */
+@media (prefers-reduced-motion:reduce){
+  .hero__track{animation:none;transform:none;margin-left:clamp(16px,4vw,56px)}
+  .hero__pause{display:none}
+  .hero__fg{transition:none}
+}
+</style>
+<noscript><style>.hero__fg{opacity:1}</style></noscript>
+</head>
+<body>
+
+<header class="top">
+  <a class="alo-dot" href="./" aria-label="ALÓ Events – Startseite">ALÓ</a>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+
+    <picture class="hero__bg">
+      <source type="image/avif" sizes="(max-aspect-ratio: 3/2) 150vh, 100vw"
+              srcset="img/hero-dj-bg-1200.avif 1200w, img/hero-dj-bg-1800.avif 1800w, img/hero-dj-bg-2400.avif 2400w">
+      <source type="image/webp" sizes="(max-aspect-ratio: 3/2) 150vh, 100vw"
+              srcset="img/hero-dj-bg-1200.webp 1200w, img/hero-dj-bg-1800.webp 1800w, img/hero-dj-bg-2400.webp 2400w">
+      <img src="img/hero-dj-bg-1800.webp" width="2400" height="1600" fetchpriority="high" decoding="async"
+           alt="DJ in kolumbianischem Fußballtrikot und Sombrero vueltiao am DJ-Pult, umringt von feiernden Gästen im blauen Clublicht">
+    </picture>
+
+    <div class="hero__marquee" aria-hidden="true">
+      <div class="hero__track">
+        <span>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+        </span>
+        <span>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <span class="hero__alo"><i>ALÓ</i></span>
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+          <img class="hero__logo" src="img/pasaporte-logo-800.webp" srcset="img/pasaporte-logo-800.webp 800w, img/pasaporte-logo-1600.webp 1600w" sizes="(max-width: 639px) 264px, (min-width: 1812px) 748px, 41.3vw" width="1600" height="279" alt="" decoding="async">
+          <svg class="hero__sep" viewBox="0 0 120 64" focusable="false"><path d="M24 44 C 30 8, 90 8, 96 44" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><rect x="1" y="37" width="46" height="22" rx="11" transform="rotate(-16 24 48)" fill="currentColor"/><rect x="73" y="37" width="46" height="22" rx="11" transform="rotate(16 96 48)" fill="currentColor"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <picture class="hero__fg">
+      <source type="image/avif" sizes="(max-aspect-ratio: 3/2) 150vh, 100vw"
+              srcset="img/hero-dj-fg-1200.avif 1200w, img/hero-dj-fg-1800.avif 1800w, img/hero-dj-fg-2400.avif 2400w">
+      <source type="image/webp" sizes="(max-aspect-ratio: 3/2) 150vh, 100vw"
+              srcset="img/hero-dj-fg-1200.webp 1200w, img/hero-dj-fg-1800.webp 1800w, img/hero-dj-fg-2400.webp 2400w">
+      <img src="img/hero-dj-fg-1800.webp" width="2400" height="1600" alt="" decoding="async">
+    </picture>
+
+    <div class="hero__shade" aria-hidden="true"></div>
+
+    <div class="hero__content">
+      <h1 id="hero-title">Latin Partys &amp; Events <span>in ganz Deutschland</span></h1>
+      <p>Latin, Afro &amp; House mit DJs und Live-Acts.</p>
+      <div class="ctas">
+        <a class="btn btn-main" href="https://www.tickettailor.com/all-tickets/aloevents/">Tickets</a>
+        <a class="btn btn-alt" href="../Website%20v5/kontakt.html?thema=event#anfrage">Event anfragen</a>
+      </div>
+    </div>
+
+    <button class="hero__pause" type="button" aria-pressed="false" aria-label="Laufband pausieren">
+      <svg class="i-pause" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><rect x="3" y="2" width="4" height="14" rx="1" fill="currentColor"/><rect x="11" y="2" width="4" height="14" rx="1" fill="currentColor"/></svg>
+      <svg class="i-play" viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M4 2.2v13.6c0 .8.9 1.3 1.6.8l10-6.8c.6-.4.6-1.2 0-1.6l-10-6.8C4.9.9 4 1.4 4 2.2z" fill="currentColor"/></svg>
+    </button>
+
+  </section>
+</main>
+
+<script>
+/* Vordergrund einblenden, sobald das Hintergrundfoto geladen ist;
+   Pause-Button fürs Laufband (die Animation selbst ist reines CSS) */
+(function () {
+  var hero = document.querySelector('.hero');
+  var btn = document.querySelector('.hero__pause');
+  if (!hero) return;
+  var bg = hero.querySelector('.hero__bg img');
+  var ready = function () { hero.classList.add('is-ready'); };
+  if (bg && bg.complete && bg.naturalWidth) ready();
+  else if (bg) bg.addEventListener('load', ready);
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    var paused = btn.getAttribute('aria-pressed') !== 'true';
+    btn.setAttribute('aria-pressed', String(paused));
+    hero.classList.toggle('is-paused', paused);
+  });
+})();
+</script>
+</body>
+</html>
